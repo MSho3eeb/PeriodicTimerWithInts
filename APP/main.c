@@ -1,3 +1,78 @@
+#if 0  //write 1 for Periodic APP, 0 for PWM App
+#include "GPTM.h"
+#include "DIO.h"
+
+volatile uint32 flag = 0;
+volatile uint32 state = 0;
+
+void timerISR(){
+    flag = 1;
+    TimerIntClear(TIMER_0, TATOIM);
+}
+
+uint32 f = 0;
+
+void main()
+{
+    DIO_Init();
+    TimerStartUse(TIMER_0);
+    TimerStartUse(TIMER_1);
+    TimerConfigure(TIMER_0, TIMERB, TIMER_MODE16, (TMR_PERIODIC | TAMS | 0xA));
+    TimerConfigure(TIMER_1, TIMERA, TIMER_MODE16, (TMR_PERIODIC | TAMS | 0xA));
+    TimerConfigure(TIMER_1, TIMERB, TIMER_MODE16, (TMR_PERIODIC | TAMS | 0xA));
+
+    TimerConfigure(TIMER_0, TIMERA, TIMER_MODE16, (TMR_ONE_SHOT));
+    TimerControlStall(TIMER_0, TIMERB, true);
+    TimerControlStall(TIMER_1, TIMERA, true);
+    TimerControlStall(TIMER_1, TIMERB, true);
+    TimerControlStall(TIMER_0, TIMERA, true);
+
+    TimerPrescaleSet(TIMER_0, TIMERB, 250);
+    TimerPrescaleSet(TIMER_1, TIMERA, 250);
+    TimerPrescaleSet(TIMER_0, TIMERB, 250);
+
+    TimerPrescaleSet(TIMER_0, TIMERA, 30);
+
+    //TimerIntNVICEnable();
+    //TimerIntEnable(TIMER_0, TATOIM);
+
+    TimerLoadSet(TIMER_0, TIMERB, 0xFFFF);
+    TimerLoadSet(TIMER_1, TIMERA, 0xFFFF);
+    TimerLoadSet(TIMER_1, TIMERB, 0xFFFF);
+    TimerLoadSet(TIMER_0, TIMERA, 0xFFFF);
+    //TimerIntRegister(TIMER_0, TIMERA, timerISR);
+
+    GPIO_PORTF_AFSEL_R |= (1<<1);
+    GPIO_PORTF_PCTL_R  |= (7<<4);
+
+    GPIO_PORTF_AFSEL_R |= (1<<2);
+    GPIO_PORTF_PCTL_R  |= (7<<8);
+
+    GPIO_PORTF_AFSEL_R |= (1<<3);
+    GPIO_PORTF_PCTL_R  |= (7<<12);
+
+    TimerEnable(TIMER_0, TIMERB);
+    TimerEnable(TIMER_0, TIMERA);
+    TimerEnable(TIMER_1, TIMERB);
+    //TimerEnable(TIMER_1, TIMERA);
+
+    uint32 rate = 0;
+
+    while(1){
+        TimerMatchSet(TIMER_0, TIMERB, rate);
+        TimerMatchSet(TIMER_1, TIMERA, rate);
+        TimerMatchSet(TIMER_1, TIMERB, rate);
+
+        while(GetEnBit(TIMER_0, TIMERA));
+        TimerEnable(TIMER_0, TIMERA);
+        rate += 0x1000;
+        if(rate > 0xFF00){
+            rate = 0;
+        }
+    }
+}
+#else
+
 #include "GPTM.h"
 #include "DIO.h"
 
@@ -40,3 +115,4 @@ void main()
         }
     }
 }
+#endif
