@@ -1,4 +1,9 @@
-#if 0  //write 1 for Periodic APP, 0 for PWM App
+
+//#define PERIODIC
+//#define PWM
+#define EDGETIME
+
+#ifdef PERIODIC
 #include "GPTM.h"
 #include "DIO.h"
 
@@ -71,7 +76,8 @@ void main()
         }
     }
 }
-#else
+#endif
+#ifdef PWM
 
 #include "GPTM.h"
 #include "DIO.h"
@@ -116,3 +122,68 @@ void main()
     }
 }
 #endif
+
+#ifdef EDGETIME
+
+#include "GPTM.h"
+#include "DIO.h"
+#include "LCD.h"
+
+void updateLCD(void)
+{
+    // Update time variables
+    ++time;
+    sec = time % 60;
+
+    // Update hours if necessary
+    if (min == 0 && sec == 0)
+    {
+        hours = time / 3600;
+        LcdSendCommand(0x80);
+        LcdSendData((hours / 10) + '0');
+        LcdSendData((hours % 10) + '0');
+        LcdSendData(':');
+        LcdSendData('0');
+        LcdSendData('0');
+        LcdSendData(':');
+        LcdSendData('0');
+        LcdSendData('0');
+    }
+    
+    // Update minutes if necessary
+    if (sec == 0)
+    {
+        min = (time / 60) % 60;
+        LcdSendCommand(0x83);
+        LcdSendData((min / 10) + '0');
+        LcdSendData((min % 10) + '0');
+        LcdSendData(':');
+        LcdSendData('0');
+        LcdSendData('0');
+    }
+
+    // Update seconds (milliseconds) part on LCD display
+    LcdSendCommand(0x86);
+    LcdSendData((sec / 10) + '0');
+    LcdSendData((sec % 10) + '0');
+}
+
+void main(void){
+
+    DIO_Init();
+    LCD_Init();
+    LcdSendString("00:00:00");
+    TimerStartUse(WTIMER_0);
+    TimerConfigure(WTIMER_0, TIMERA, WTIMER_MODE32, (TMR_CAPTURE | TCDIR | TCMR ));
+    TimerControlStall(WTIMER_0, TIMERA, true);
+    TimerEnable(WTIMER_0, TIMERA);
+
+    GPIO_PORTD_AFSEL_R |= 0x01;
+    GPIO_PORTD_PCTL_R &= ~(0x0000000F);
+    GPIO_PORTD_PCTL_R |= 0x00000007;
+
+    while(1){
+        
+    }
+
+}
