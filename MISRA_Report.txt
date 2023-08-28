@@ -1,0 +1,15 @@
+MISRA Check without: 10, 11.3, 12.7, 19.4
+
+Description	Resource	Path	Location	Type
+#1376-D (MISRA-C:2004 1.1/R) Ensure strict ANSI C mode (-ps) is enabled	types.h	/CCS	line 4	C/C++ Problem
+#1407-D (MISRA-C:2004 12.8/R) The right-hand operand of a shift operator shall lie between zero and one less than the width in bits of the underlying type of the left-hand operand	GPTM.c	/CCS	line 55	C/C++ Problem
+#1407-D (MISRA-C:2004 12.8/R) The right-hand operand of a shift operator shall lie between zero and one less than the width in bits of the underlying type of the left-hand operand	GPTM.c	/CCS	line 72	C/C++ Problem
+#1407-D (MISRA-C:2004 12.8/R) The right-hand operand of a shift operator shall lie between zero and one less than the width in bits of the underlying type of the left-hand operand	GPTM.c	/CCS	line 89	C/C++ Problem
+#1459-D (MISRA-C:2004 12.1/A) Limited dependence should be placed on C's operator precedence rules in expressions	GPTM.c	/CCS	line 225	C/C++ Problem
+#1459-D (MISRA-C:2004 12.1/A) Limited dependence should be placed on C's operator precedence rules in expressions	GPTM.c	/CCS	line 276	C/C++ Problem
+#1459-D (MISRA-C:2004 12.1/A) Limited dependence should be placed on C's operator precedence rules in expressions	GPTM.c	/CCS	line 369	C/C++ Problem
+#1468-D (MISRA-C:2004 14.7/R) A function shall have a single point of exit at the end of the function	GPTM.c	/CCS	line 249	C/C++ Problem
+#1468-D (MISRA-C:2004 14.7/R) A function shall have a single point of exit at the end of the function	GPTM.c	/CCS	line 257	C/C++ Problem
+#1497-D (MISRA-C:2004 5.7/A) No identifier name should be reused ("lRetVal")	GPTM.c	/CCS	line 353	C/C++ Problem
+#1498-D (MISRA-C:2004 6.3/A) typedefs that indicate size and signedness should be used in place of the basic numerical types	GPTM.c	/CCS	line 11	C/C++ Problem
+#1498-D (MISRA-C:2004 6.3/A) typedefs that indicate size and signedness should be used in place of the basic numerical types	GPTM.c	/CCS	line 13	C/C++ Problem
